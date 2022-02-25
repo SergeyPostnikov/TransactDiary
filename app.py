@@ -8,7 +8,6 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec import APISpec
 from flask_apispec.extension import FlaskApiSpec
 from flask_apispec import use_kwargs, marshal_with
-from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 from schemas import UserSchema, TransactionSchema, AuthSchema
 from config import Config
 
@@ -18,7 +17,6 @@ app.config.from_object(Config)
 client = app.test_client()
 engine = create_engine('mysql://root:1234@localhost/wallet')
 session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
-jwt = JWTManager(app)
 
 Base = declarative_base()
 Base.query = session.query_property()

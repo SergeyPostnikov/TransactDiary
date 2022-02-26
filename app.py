@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 client = app.test_client()
-engine = create_engine('mysql://root:1234@localhost/wallet')
+engine = create_engine('sqlite:///db.sqlite')
 session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
 Base = declarative_base()

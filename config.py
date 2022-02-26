@@ -7,7 +7,7 @@ class Config:
 	APISPEC_SPEC = APISpec(
 		title='wallet',
 		version='v1',
-		openapi_version='3.0.1',
+		openapi_version='3.0.2',
 		plugins=[MarshmallowPlugin()],)
 
 	APISPEC_SWAGGER_URL = '/swagger/'

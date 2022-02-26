@@ -14,9 +14,3 @@ class TransactionSchema(Schema):
 	description = fields.String(required=True, validate=[validate.Length(max=50)])
 	amount = fields.Decimal(required=True)
 	created_at = fields.DateTime(dump_only=True)
-
-class AuthSchema(Schema):
-    access_token = fields.String(dump_only=True)
-    message = fields.String(dump_only=True)
-
-

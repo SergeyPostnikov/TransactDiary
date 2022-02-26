@@ -8,7 +8,7 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec import APISpec
 from flask_apispec.extension import FlaskApiSpec
 from flask_apispec import use_kwargs, marshal_with
-from schemas import UserSchema, TransactionSchema, AuthSchema
+from schemas import UserSchema, TransactionSchema
 from config import Config
 
 app = Flask(__name__)
@@ -46,25 +46,6 @@ def create_user(**kwargs):
 	return user
 
 
-@app.route('/register', methods=['POST'])
-@use_kwargs(UserSchema)
-@marshal_with(AuthSchema)	
-def register(**kwargs):
-	user = User(**kwargs)
-	session.add(user)
-	session.commit()
-	token = user.get_token()
-	return jsonify({'access_token': token})
-
-
-@app.route('/login', methods=['POST'])
-@use_kwargs(AuthSchema)
-@marshal_with(AuthSchema)	
-def login(**kwargs):
-	user = User.auth(**kwargs)
-	token = user.get_token()
-	return jsonify({'access_token': token})	
-
 
 @app.route('/user/<int:user_id>', methods=['PUT'])
 @use_kwargs(UserSchema)
@@ -91,7 +72,7 @@ def delete_user(user_id):
 @app.route('/user/transactions', methods=['GET'])
 @marshal_with(TransactionSchema(many=True))
 def get_transactions():
-	user_id = get_jwt_identity()
+	user_id = request.json.get('user_id')
 	return Transaction.get_transactions(user_id=user_id)
 
 
@@ -99,8 +80,7 @@ def get_transactions():
 @use_kwargs(TransactionSchema)
 @marshal_with(TransactionSchema)
 def create_transaction(**kwargs):
-	user_id = get_jwt_identity()
-	transaction = Transaction(user_id=user_id, **kwargs)
+	transaction = Transaction(**kwargs)
 	session.add(transaction)
 	session.commit()
 	return transaction
@@ -118,7 +98,7 @@ def update_transaction(id, **kwargs):
 @app.route('/user/transaction/<int:id>', methods=['DELETE'])
 @marshal_with(TransactionSchema)
 def delete_transaction(id):
-		return Transaction.delete_transaction(tr_id=id)
+	return Transaction.delete_transaction(tr_id=id)
 
 
 @app.teardown_appcontext
@@ -130,12 +110,12 @@ docs.register(get_users)
 docs.register(create_user)
 docs.register(update_user)
 docs.register(delete_user)
-docs.register(login)
 
-# docs.register(get_transactions)
-# docs.register(create_transaction)
-# docs.register(update_transaction)
-# docs.register(delete_transactio)
+
+docs.register(get_transactions)
+docs.register(create_transaction)
+docs.register(update_transaction)
+docs.register(delete_transaction)
 
 
 

@@ -1,8 +1,6 @@
 from app import db, session, Base
 from datetime import datetime
-from flask_jwt_extended import create_access_token
 from datetime import timedelta
-from passlib.hash import bcrypt
 
 class User(Base):
 	__tablename__ = 'users'
@@ -16,19 +14,6 @@ class User(Base):
 		self.name = kwargs.get('name')
 		self.email = kwargs.get('email')
 		self.password = bcrypt.hash(kwargs.get('psw'))
-
-	def get_token(self, expire_time=24):
-		token = create_access_token(identity=self.user_id, 
-									expires_delta=timedelta(expire_time))
-		return token
-
-	@classmethod
-	def auth(cls, email, psw):
-		user = cls.get_user(email=email)
-		if not bcrypt.verify(psw, user.psw):
-			raise Exception('Wrong password or login')
-		return user
-
 
 	@classmethod
 	def get_users(cls):
@@ -71,22 +56,23 @@ class Transaction(Base):
 
 	@classmethod
 	def get_transactions(cls, user_id):
-		return cls.query.filter(user_id=user_id).all()
+		return cls.query.filter(user_id==user_id).all()
 
 	@classmethod
 	def get_transaction(cls, tr_id):
 		return cls.query.filter_by(tr_id=tr_id).first()
 
-	def update_transaction(self):
+	def update_transaction(self, **kwargs):
 		for key, field in kwargs.items():
 			setattr(self, key, field)
 		session.commit()
 		return self
 
+	@classmethod
 	def delete_transaction(cls, tr_id):
-		transaction = cls.query.filter(tr_id==tr_id)
+		transaction = cls.get_transaction(tr_id=tr_id)
 		session.delete(transaction)
 		session.commit()
 		return transaction
-
+	
 

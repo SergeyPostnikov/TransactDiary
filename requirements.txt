@@ -4,7 +4,6 @@ click==8.0.3
 colorama==0.4.4
 Flask==2.0.2
 flask-apispec==0.11.0
-Flask-JWT-Extended==4.3.1
 greenlet==1.1.2
 itsdangerous==2.0.1
 Jinja2==3.0.3
@@ -13,7 +12,6 @@ marshmallow==3.14.1
 packaging==21.3
 passlib==1.7.4
 pycparser==2.21
-PyJWT==2.3.0
 pyparsing==3.0.7
 six==1.16.0
 SQLAlchemy==1.4.31

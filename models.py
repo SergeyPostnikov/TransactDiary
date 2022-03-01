@@ -1,6 +1,7 @@
 from app import db, session, Base
 from datetime import datetime
 from datetime import timedelta
+from werkzeug.security import generate_password_hash 
 
 class User(Base):
 	__tablename__ = 'users'
@@ -11,9 +12,10 @@ class User(Base):
 	psw = db.Column(db.String(500), nullable=False)
 
 	def __init__(self, **kwargs):
-		self.name = kwargs.get('name')
+		self.firstname = kwargs.get('firstname')
+		self.lastname = kwargs.get('lastname')
 		self.email = kwargs.get('email')
-		self.password = bcrypt.hash(kwargs.get('psw'))
+		self.psw = generate_password_hash(kwargs.get('psw'))
 
 	@classmethod
 	def get_users(cls):
